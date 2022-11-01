@@ -1,0 +1,10 @@
+{% extends 'login_base.html' %}
+
+{% block title %} Internal Server Error {% endblock %}
+{% block content %}
+
+  <h1>Oops! Internal Server Error. </h1>
+<a href="{{ url_for('login') }}"><p>Click Here To go to the Login Page </p></a>
+
+{% endblock %}
+

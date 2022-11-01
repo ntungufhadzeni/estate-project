@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} Home {% endblock %}
+{% block content %}
+<div class="content">
+    <div class="index">
+        <h1>Welcome to Smart Homes Lock &  <br><span> Facial Recognition </span> <br>App</h1>
+        <p class="par">Face recognition solution for access control, security , surveillance and video investigation.
+        <br> Recognize face and track  facial features and  expression.
+        <br> Provides keyless door entry</p>
+        <a href="{{ url_for('add_resident') }}" class="btn">Register Resident</a>
+        <a href="{{ url_for('add_visitor') }}" class="btn">Register Visitor</a>
+        <a href="{{ url_for('view_register') }}" class="btn">View Register</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %} Resident {% endblock %}
+
+{% block content %}
+<div class="main_container">
+	<h3>Resident Details</h3>
+   <table>
+			<tr>
+				<td>ID/Passport Number:	</td>
+				<td>{{resident.id_number}}</td>
+			</tr>
+	   		<tr>
+				<td>Title:	</td>
+				<td>{{resident.title.capitalize()}}</td>
+			</tr>
+			<tr>
+				<td>First Name:	</td>
+				<td>{{resident.first_name.capitalize()}}</td>
+			</tr>
+            <tr>
+				<td>Surname:	</td>
+				<td>{{resident.surname.capitalize()}}</td>
+			</tr>
+	   		<tr>
+				<td>Gender:	</td>
+				<td>{{resident.gender.capitalize()}}</td>
+			</tr>
+			<tr>
+				<td>Phone:	</td>
+				<td>{{resident.phone}}</td>
+			</tr>
+			<tr>
+				<td>Email:	</td>
+				<td>{{resident.email}}</td>
+			</tr>
+			<tr>
+				<td>House Number:	</td>
+				<td>{{resident.house_number}}</td>
+			</tr>
+			<tr>
+				<td>Car Reg:	</td>
+				<td>{{resident.car_reg.upper()}}</td>
+			</tr>
+			<tr>
+				<td>Password:	</td>
+				<td>{{resident.password}}</td>
+			</tr>
+	    </table>
+	<img src="../static/photos/{{resident.profile_image}}" alt="{{resident.first_name}}"></img>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'login_base.html' %}
+
+{% block title %} Login {% endblock %}
+{% block content %}
+    <div class = "form-main">
+        <div class="form-login">
+            <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <h2>Login Here</h2>
+                <p>
+              {{ form.admin_number.label }}<br>
+              {{ form.admin_number(size=32) }}<br>
+              {% for error in form.admin_number.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+            </p>
+            <p>
+              {{ form.email.label }}<br>
+              {{ form.email(size=32) }}<br>
+              {% for error in form.email.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+            </p>
+            <p>
+              {{ form.password.label }}<br>
+              {{ form.password() }}<br>
+              {% for error in form.password.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+            </p>
+            <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+            <p>{{ form.submit() }}</p>
+        </form>
+            <p>New User? <a class="other-links" href="{{ url_for('signup_post') }}">Click to Register!</a></p>
+        </div>
+    </div>
+{% endblock %}
+

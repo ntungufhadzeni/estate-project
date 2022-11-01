@@ -1,0 +1,38 @@
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#residents tr').click(function () {
+        let href = $(this).find("a").attr("href");
+        if (href) {
+            window.location = href;
+        }
+    });
+});
+</script>
+{% endblock %}
+<table id="residents" style="background: white">
+    <thead>
+        <tr>
+            <th>First name</th>
+            <th>Surname</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>House number</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for resident in residents %}
+        <tr>
+            <td><a href="/resident/{{resident.id}}">{{resident.first_name}}</a></td>
+            <td>{{resident.surname}}</td>
+            <td>{{resident.phone}}</td>
+            <td>{{resident.email}}</td>
+            <td>{{resident.house_number}}</td>
+            <td>
+                <a href="/delete/{{resident.id}}">Delete</a><br>
+                <a href="/register-visitor/{{resident.id}}">Link visitor</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>

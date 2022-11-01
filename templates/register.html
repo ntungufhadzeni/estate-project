@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} Register {% endblock %}
+
+{% block content %}
+<div>
+    <div style="padding: 80px">
+        <form class="search1">
+            <input type="text" placeholder="Search.." name="search_text" id="search_text-register">
+        </form> <br>
+        <div id="result-register"></div>
+    </div>
+</div>
+<div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-primary" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}
