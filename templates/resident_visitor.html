@@ -1,0 +1,51 @@
+{% extends 'other_base.html' %}
+
+{% block title %} Profile {% endblock %}
+
+{% block content %}
+<div class="main-page">
+	<div class="profile-container">
+		<h3> Profile </h3>
+   		<table>
+			<tr>
+				<td>ID/Passport Number:	</td>
+				<td>{{user.id_number}}</td>
+			</tr>
+	   		<tr>
+				<td>Title:	</td>
+				<td>{{user.title.capitalize()}}</td>
+			</tr>
+			<tr>
+				<td>First Name:	</td>
+				<td>{{user.first_name.capitalize()}}</td>
+			</tr>
+            <tr>
+				<td>Surname:	</td>
+				<td>{{user.surname.capitalize()}}</td>
+			</tr>
+	   		<tr>
+				<td>Gender:	</td>
+				<td>{{user.gender.capitalize()}}</td>
+			</tr>
+			<tr>
+				<td>Phone:	</td>
+				<td>{{user.phone}}</td>
+			</tr>
+			<tr>
+				<td>Email:	</td>
+				<td>{{user.email}}</td>
+			</tr>
+			<tr>
+				<td>Address:	</td>
+				<td>{{user.address}}</td>
+			</tr>
+			<tr>
+				<td>Car Reg:	</td>
+				<td>{{user.car_reg.upper()}}</td>
+			</tr>
+	    </table>
+		<img src="../static/photos/{{user.profile_image}}" alt="{{user.first_name}}"></img>
+		<a href="/generate-user-qr-code/{{user.id}}" class="btn">Generate QR Code</a>
+	</div>
+</div>
+{% endblock %}

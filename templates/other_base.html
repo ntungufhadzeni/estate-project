@@ -115,11 +115,8 @@ $(document).ready(function(){
                 <div class="navCollapseCol">
                 <div class="navCol">
                   <ul>
-                      <li><a href="{{url_for('view_admin_profile', user_id=current_user.id)}}">My Profile</a></li>
-                      <li><a href="{{ url_for('view_residents', user_id=user.id) }}">View Residents</a></li>
-                      <li><a href="{{ url_for('view_visitors', user_id=user.id) }}">View Visitors</a></li>
+                      <li><a href="{{url_for('view_profile', user_id=user.id)}}">My Profile</a></li>
                       <li><a href="{{ url_for('view_user_qrcode', user_id=user.id) }}">My QR Code</a></li>
-                      <li><a href="{{ url_for('view_register', user_id=user.id) }}">View Register</a></li>
                       <li><a href="{{ url_for('logout') }}">Logout</a></li>
                   </ul>
                 </div>

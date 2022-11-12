@@ -1,0 +1,16 @@
+{% extends 'login_base.html' %}
+
+{% block title %} Verification {% endblock %}
+
+{% block content %}
+<div class="main-page">
+	<div class="verify-container">
+        <span>&#9989;</span>
+		<h3>Verified</h3>
+		<p>Title: {{user.title.capitalize()}}</p>
+		<p>First Name: {{user.first_name.capitalize()}}</p>
+		<p>Surname:	{{user.surname.capitalize()}}</p>
+		<img src="../static/photos/{{user.profile_image}}" alt="{{user.first_name}}"></img>
+	</div>
+</div>
+{% endblock %}

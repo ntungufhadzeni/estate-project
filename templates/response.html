@@ -17,21 +17,20 @@ $(document).ready(function() {
             <th>Surname</th>
             <th>Phone</th>
             <th>Email</th>
-            <th>House number</th>
+            <th>Address</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         {% for resident in residents %}
         <tr>
-            <td><a href="/resident/{{resident.id}}">{{resident.first_name}}</a></td>
+            <td><a href="/admin-profile/{{resident.id}}">{{resident.first_name}}</a></td>
             <td>{{resident.surname}}</td>
             <td>{{resident.phone}}</td>
             <td>{{resident.email}}</td>
-            <td>{{resident.house_number}}</td>
+            <td>{{resident.address}}</td>
             <td>
-                <a href="/delete/{{resident.id}}">Delete</a><br>
-                <a href="/register-visitor/{{resident.id}}">Link visitor</a>
+                <a class="other-links" href="/delete-resident/{{resident.id}}">Delete</a><br>
             </td>
         </tr>
         {% endfor %}

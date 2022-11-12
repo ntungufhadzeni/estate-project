@@ -48,31 +48,7 @@ var swiper = new Swiper(".certificatesSlider", {
 });
 
 function ShowHideDiv() {
-        let chkYes1 = document.getElementById("Yes 0");
-        let specify1 = document.getElementById("dv 0");
-        specify1.style.display = chkYes1.checked ? "block" : "none";
-
-        let chkYes2 = document.getElementById("Yes 1");
-        let specify2 = document.getElementById("dv 1");
-        specify2.style.display = chkYes2.checked ? "block" : "none";
-
-        let chkYes3 = document.getElementById("Yes 2");
-        let specify3 = document.getElementById("dv 2");
-        specify3.style.display = chkYes3.checked ? "block" : "none";
-
-        let chkYes4 = document.getElementById("Yes 3");
-        let specify4 = document.getElementById("dv 3");
-        specify4.style.display = chkYes4.checked ? "block" : "none";
-
-        let chkYes5 = document.getElementById("Yes 4");
-        let specify5 = document.getElementById("dv 4");
-        specify5.style.display = chkYes5.checked ? "block" : "none";
-
-        let chkYes6 = document.getElementById("Yes 5");
-        let specify6 = document.getElementById("dv 5");
-        specify6.style.display = chkYes6.checked ? "block" : "none";
-
-        let chkYes7 = document.getElementById("Yes 6");
-        let specify7 = document.getElementById("dv 6");
-        specify7.style.display = chkYes7.checked ? "block" : "none";
-    }
+  let chkYes = document.getElementById("yes-admin");
+  let specify = document.getElementById("admin");
+  specify.style.display = chkYes.checked ? "block" : "none";
+}

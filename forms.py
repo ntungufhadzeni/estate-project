@@ -17,7 +17,7 @@ from wtforms.validators import (
     InputRequired
 )
 
-from models import User, Resident, Visitor
+from models import User
 
 titles = [('mr', 'Mr'), ('mrs', 'Mrs'), ('ms', 'Ms'), ('miss', 'Miss'), ('dr', 'Dr'), ('prof', 'Prof')]
 genders = [('male', 'Male'), ('female', 'Female'), ('non-binary', 'Non-Binary')]
@@ -55,36 +55,29 @@ def unique_email_validator(form, field):
 
 
 def unique_validator_resident(form, field):
-    resident = Resident.query.filter_by(id_number=form.id_number.data).first()
+    resident = User.query.filter_by(id_number=form.id_number.data).first()
     if resident:
         raise ValidationError('This ID number is already in use. Please try another one.')
 
 
 def unique_validator_visitor(form, field):
-    visitor = Visitor.query.filter_by(id_number=form.id_number.data).first()
+    visitor = User.query.filter_by(id_number=form.id_number.data).first()
     if visitor:
         raise ValidationError('This ID number is already in use. Please try another one.')
 
 
 class LoginForm(FlaskForm):
-    admin_number = IntegerField(
-        'Admin Number',
-        [
-            DataRequired(message="This field is required."),
-            admin_number_validator
-        ]
-    )
     email = StringField(
         'Email',
         [
             Email(message='Not a valid email address.'),
-            DataRequired()
+            DataRequired(message="Please enter your email address")
         ]
     )
     password = PasswordField(
         'Password',
         [
-            DataRequired(message="Please enter a password."),
+            DataRequired(message="Please enter a password"),
             login_check
         ]
     )
@@ -92,42 +85,68 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Sign In')
 
 
-class SignupForm(FlaskForm):
+class AdminForm(FlaskForm):
     admin_number = IntegerField(
         'Admin Number',
         [
-            DataRequired(message="This field is required."),
+            DataRequired(message="This field is required"),
             unique_admin_validator
+        ]
+    )
+    id_number = IntegerField(
+        'ID/Passport Number',
+        [
+            DataRequired(message="This field is required"),
+            unique_validator_visitor
         ]
     )
     title = SelectField(
         'Title',
         choices=titles,
-        validators=[DataRequired(message="This field is required.")]
+        validators=[DataRequired(message="This field is required")]
     )
     first_name = StringField(
         'First Name',
         [
-            DataRequired(message="This field is required.")
+            DataRequired(message="This field is required")
         ]
     )
     surname = StringField(
         'Surname',
         [
-            DataRequired(message="This field is required.")
+            DataRequired(message="This field is required")
         ]
     )
     gender = SelectField(
         'Gender',
         choices=genders,
-        validators=[DataRequired(message="This field is required.")]
+        validators=[DataRequired(message="This field is required")]
+    )
+    house_number = IntegerField(
+        'House No.',
+        [
+            DataRequired(message="This field is required")
+        ]
+    )
+    car_reg = StringField(
+        'Car Registration',
+        [
+            DataRequired(message="This field is required")
+        ]
     )
     email = StringField(
         'Email',
         [
-            Email(message='Not a valid email address.'),
-            DataRequired(),
+            Email(message='Not a valid email address'),
+            DataRequired(message="This field is required"),
             unique_email_validator
+        ]
+    )
+    phone = StringField(
+        'Cellphone',
+        [
+            DataRequired(message="This field is required"),
+            validate_phone
         ]
     )
     password = PasswordField(
@@ -138,136 +157,152 @@ class SignupForm(FlaskForm):
         ]
     )
     confirmPassword = PasswordField('Repeat Password')
-    submit = SubmitField('Submit')
+    upload = FileField('Profile Picture', validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'png'], 'Images only!')
+    ])
+    submit = SubmitField('SignUp')
 
 
 class ResidentForm(FlaskForm):
     id_number = IntegerField(
         'ID/Passport Number',
         [
-            DataRequired(message="This field is required."),
-            unique_validator_resident
-        ]
-    )
-    title = SelectField(
-        'Title',
-        choices=titles,
-        validators=[DataRequired(message="This field is required.")]
-    )
-    first_name = StringField(
-        'First Name',
-        [
-            DataRequired(message="This field is required.")
-        ]
-    )
-    surname = StringField(
-        'Surname',
-        [
-            DataRequired(message="This field is required.")
-        ]
-    )
-    gender = SelectField(
-        'Gender',
-        choices=genders,
-        validators=[DataRequired(message="This field is required.")]
-    )
-    house_number = IntegerField(
-        'House No.',
-        [
-            DataRequired(message="This field is required.")
-        ]
-    )
-    car_reg = StringField(
-        'Car Registration',
-        [
-            DataRequired(message="This field is required.")
-        ]
-    )
-    email = StringField(
-        'Email',
-        [
-            Email(message='Not a valid email address.'),
-            DataRequired(message="This field is required.")
-        ]
-    )
-    phone = StringField(
-        'Cellphone',
-        [
-            DataRequired(message="This field is required."),
-            validate_phone
-        ]
-    )
-    password = StringField(
-        'Password',
-        [
-            DataRequired(message="This field is required."),
-        ]
-    )
-    upload = FileField('Profile Picture', validators=[
-        FileRequired(),
-        FileAllowed(['jpg', 'png'], 'Images only!')
-    ])
-    submit = SubmitField('Add Resident')
-
-
-class VisitorForm(FlaskForm):
-    id_number = IntegerField(
-        'ID/Passport Number',
-        [
-            DataRequired(message="This field is required."),
+            DataRequired(message="This field is required"),
             unique_validator_visitor
         ]
     )
     title = SelectField(
         'Title',
         choices=titles,
-        validators=[DataRequired(message="This field is required.")]
+        validators=[DataRequired(message="This field is required")]
     )
     first_name = StringField(
         'First Name',
         [
-            DataRequired(message="This field is required.")
+            DataRequired(message="This field is required")
         ]
     )
     surname = StringField(
         'Surname',
         [
-            DataRequired(message="This field is required.")
+            DataRequired(message="This field is required")
         ]
     )
     gender = SelectField(
         'Gender',
         choices=genders,
-        validators=[DataRequired(message="This field is required.")]
+        validators=[DataRequired(message="This field is required")]
     )
     address = StringField(
         'Address',
         [
-            DataRequired(message="This field is required.")
+            DataRequired(message="This field is required")
         ]
     )
     car_reg = StringField(
         'Car Registration',
         [
-            DataRequired(message="This field is required.")
+            DataRequired(message="This field is required")
         ]
     )
     email = StringField(
         'Email',
         [
-            Email(message='Not a valid email address.'),
-            DataRequired(message="This field is required.")
+            Email(message='Not a valid email address'),
+            DataRequired(message="This field is required"),
+            unique_email_validator
         ]
     )
     phone = StringField(
         'Cellphone',
         [
-            DataRequired(message="This field is required."),
+            DataRequired(message="This field is required"),
             validate_phone
         ]
     )
+    password = PasswordField(
+        'Password',
+        [
+            InputRequired(),
+            EqualTo('confirmPassword', message='Passwords must match')
+        ]
+    )
+    confirmPassword = PasswordField('Repeat Password')
     upload = FileField('Profile Picture', validators=[
         FileRequired(),
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
-    submit = SubmitField('Add Visitor')
+    submit = SubmitField('SignUp')
+
+
+class VisitorForm(FlaskForm):
+    id_number = IntegerField(
+        'ID/Passport Number',
+        [
+            DataRequired(message="This field is required"),
+            unique_validator_visitor
+        ]
+    )
+    title = SelectField(
+        'Title',
+        choices=titles,
+        validators=[DataRequired(message="This field is required")]
+    )
+    first_name = StringField(
+        'First Name',
+        [
+            DataRequired(message="This field is required")
+        ]
+    )
+    surname = StringField(
+        'Surname',
+        [
+            DataRequired(message="This field is required")
+        ]
+    )
+    gender = SelectField(
+        'Gender',
+        choices=genders,
+        validators=[DataRequired(message="This field is required")]
+    )
+    address = StringField(
+        'Address',
+        [
+            DataRequired(message="This field is required")
+        ]
+    )
+    car_reg = StringField(
+        'Car Registration',
+        [
+            DataRequired(message="This field is required")
+        ]
+    )
+    email = StringField(
+        'Email',
+        [
+            Email(message='Not a valid email address'),
+            DataRequired(),
+            unique_email_validator
+        ]
+    )
+    phone = StringField(
+        'Cellphone',
+        [
+            DataRequired(message="This field is required"),
+            validate_phone
+        ]
+    )
+    password = PasswordField(
+        'Password',
+        [
+            InputRequired(),
+            EqualTo('confirmPassword', message='Passwords must match')
+        ]
+    )
+    confirmPassword = PasswordField('Repeat Password')
+    upload = FileField('Profile Picture', validators=[
+        FileRequired(),
+        FileAllowed(['jpg', 'png'], 'Images only!')
+    ])
+    submit = SubmitField('SignUp')

@@ -3,153 +3,24 @@
 {% block title %} Residents {% endblock %}
 
 {% block content %}
-<div class = "form-main-resident">
-        <div class="form-resident">
-            <form action="" method="post" enctype="multipart/form-data" novalidate>
-            {{ form.hidden_tag() }}
-            <h2>Add Resident</h2>
-                <p>
-              {{ form.id_number.label }}<br>
-              {{ form.id_number }}<br>
-                </p>
-              {% if form.id_number.errors %}
-                <ul class="errors">
-                {% for error in form.id_number.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-                <p>
-              {{ form.title.label }}<br>
-              {{ form.title }}<br>
-                </p>
-              {% if form.title.errors %}
-                <ul class="errors">
-                {% for error in form.title.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-                <p>
-              {{ form.first_name.label }}<br>
-              {{ form.first_name }}<br>
-            </p>
-              {% if form.first_name.errors %}
-                <ul class="errors">
-                {% for error in form.first_name.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-                <p>
-              {{ form.surname.label }}<br>
-              {{ form.surname }}<br>
-            </p>
-              {% if form.surname.errors %}
-                <ul class="errors">
-                {% for error in form.surname.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-                <p>
-              {{ form.gender.label }}<br>
-              {{ form.gender }}<br>
-            </p>
-              {% if form.gender.errors %}
-                <ul class="errors">
-                {% for error in form.gender.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                    </ul>
-                {% endif %}
-                <p>
-              {{ form.house_number.label }}<br>
-              {{ form.house_number }}<br>
-            </p>
-              {% if form.house_number.errors %}
-                <ul class="errors">
-                {% for error in form.house_number.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-                <p>
-              {{ form.car_reg.label }}<br>
-              {{ form.car_reg }}<br>
-            </p>
-              {% if form.car_reg.errors %}
-                <ul class="errors">
-                {% for error in form.car_reg.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-            <p>
-              {{ form.email.label }}<br>
-              {{ form.email }}<br>
-            </p>
-              {% if form.email.errors %}
-                <ul class="errors">
-                {% for error in form.email.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-                <p>
-              {{ form.phone.label }}<br>
-              {{ form.phone }}<br>
-            </p>
-              {% if form.phone.errors %}
-                <ul class="errors">
-                {% for error in form.phone.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-               <p>
-            <p>
-              {{ form.password.label }}<br>
-              {{ form.password }}<br>
-            </p>
-              {% if form.password.errors %}
-                <ul class="errors">
-                {% for error in form.password.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-               <p>
-              {{ form.upload.label }}<br>
-              {{ form.upload }}<br>
-               </p>
-             {% if form.upload.errors %}
-                <ul class="errors">
-                {% for error in form.upload.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-                {% endif %}
-            <p>{{ form.submit() }}</p>
-        </form>
-            <div>
-                {% with messages = get_flashed_messages() %}
+<div class="main-page">
+    <div class="table-container">
+        <H2>Residents</H2>
+        <form class="search">
+            <input type="text" placeholder="Filter.." name="search_text" id="search_text">
+        </form> <br>
+        <div id="result"></div>
+        <div>
+            {% with messages = get_flashed_messages() %}
                 {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert alert-primary" role="alert">
-                                    {{ message }}
-                                </div>
+                    {% for message in messages %}
+                        <div class="alert alert-primary" role="alert">
+                            {{ message }}
+                        </div>
                     {% endfor %}
                 {% endif %}
-                {% endwith %}
-            </div>
-            </div>
-    <hr><br>
-    </div> <br>
-    <div>
-    <form class="search1">
-        <input type="text" placeholder="Search.." name="search_text" id="search_text">
-    </form> <br>
-    <div id="result"></div>
+            {% endwith %}
+        </div>
     </div>
+</div>
 {% endblock %}

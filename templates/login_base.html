@@ -26,7 +26,7 @@
                 <div class="navCol">
                   <ul>
                       <li><a href="{{ url_for('login') }}">Login</a></li>
-                      <li><a href="{{ url_for('signup_post') }}">Signup</a></li>
+                      <li><a href="{{ url_for('home') }}">Sign Up</a></li>
                   </ul>
                 </div>
               </div>
@@ -36,5 +36,22 @@
       </div>
     </header>
 {% block content %} {% endblock %}
+<script src="static/js/script.js"></script>
+<footer class="footer">
+    <div class="lightBg">
+        <div class="footerCol">
+            <div class="container">
+                <ul class="socialCol">
+                    <li><a href="#"><img src="{{url_for('static', filename='images/fb.svg')}}" alt="..."></a></li>
+                    <li><a href="#"><img src="{{url_for('static', filename='images/insta.svg')}}" alt="..."></a></li>
+                    <li><a href="#"><img src="{{url_for('static', filename='images/twitter.svg')}}" alt="..."></a></li>
+                </ul>
+            </div>
+            <div class="copyrightCol">
+                <p class="footer-text">© 2022 Copyright: Security Company</p>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

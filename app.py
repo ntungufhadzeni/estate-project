@@ -4,14 +4,25 @@ import os
 from flask import Flask, render_template, request, redirect, flash, url_for, jsonify, session
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_migrate import Migrate
-from sqlalchemy import or_, desc
+from sqlalchemy import or_, desc, func
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+import qrcode
+import string
+import random
 
-from forms import LoginForm, SignupForm, ResidentForm, VisitorForm
-from models import db, User, Resident, Visitor, Register
+from forms import LoginForm, AdminForm, ResidentForm, VisitorForm
+from models import db, User, Register
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+qrcode_path = os.path.join(basedir, 'static', 'qrcodes')
+photos_path = os.path.join(basedir, 'static', 'photos')
+
+if not os.path.exists(photos_path):
+    os.makedirs(photos_path)
+
+if not os.path.exists(qrcode_path):
+    os.makedirs(qrcode_path)
 
 app = Flask(__name__, template_folder='./templates')
 app.config['SECRET_KEY'] = os.urandom(15)
@@ -39,7 +50,7 @@ def not_found(e):
     return render_template("400.html"), 400
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
@@ -48,38 +59,47 @@ def login():
             remember = True if form.remember_me.data else False
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=remember)
-                return redirect(url_for('home'))
+                if user.is_admin():
+                    return redirect(url_for('view_admin_profile', user_id=user.id))
+                else:
+                    return redirect(url_for('view_profile', user_id=user.id))
     return render_template('login.html', form=form)
 
 
-@app.route('/signup', methods=['POST', 'GET'])
-def signup_post():
-    form = SignupForm()
+@app.route('/admin-signup', methods=['POST', 'GET'])
+def admin_signup():
+    form = AdminForm()
     if form.validate_on_submit():
         admin_number = form.admin_number.data
+        id_number = form.id_number.data
         title = form.title.data
         first_name = form.first_name.data
         surname = form.surname.data
         gender = form.gender.data
         email = form.email.data
+        address = form.house_number.data
+        car_reg = form.car_reg.data
+        phone = form.phone.data
+        category = 0
         password = generate_password_hash(form.password.data, method='sha256')
 
-        new_user = User(admin_number, title, first_name, surname, gender, email, password)
+        f = form.upload.data
+        word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        filename = f'{word}{secure_filename(f.filename)[-4:]}'
+        f.save(os.path.join(basedir, 'static', 'photos', filename))
+        new_user = User(admin_number=admin_number, id_number=id_number, category=category, title=title,
+                        first_name=first_name, surname=surname, gender=gender, email=email, address=address,
+                        car_reg=car_reg, phone=phone, password=password, profile_image=filename)
         db.session.add(new_user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('signup_post'))
-    return render_template('signup.html', form=form)
+        return redirect(url_for('admin_signup'))
+    return render_template('admin_signup.html', form=form)
 
 
-@login_required
-@app.route('/home')
+@app.route('/')
 def home():
-    if current_user.is_authenticated:
-        name = f'{current_user.first_name.capitalize()} {current_user.surname.capitalize()}'
-        return render_template('index.html', name=name)
-    else:
-        return redirect(url_for('login'))
+    return render_template('index.html')
 
 
 @login_required
@@ -93,165 +113,145 @@ def logout():
 
 
 @login_required
-@app.route('/residents', methods=['GET', 'POST'])
-def add_resident():
-    if current_user.is_authenticated:
-        user = current_user.id
-        form = ResidentForm()
-        if form.validate_on_submit():
-            f = form.upload.data
-            filename = f'{form.first_name.data}_{form.surname.data}_{form.house_number.data}{secure_filename(f.filename)[-4:]}'
-            f.save(os.path.join(basedir, 'static', 'photos', filename))
-            new_resident = Resident(user, form.id_number.data, form.title.data, form.first_name.data, form.surname.data,
-                                    form.gender.data, form.house_number.data, form.car_reg.data, form.email.data,
-                                    form.phone.data, form.password.data, filename)
-            try:
-                db.session.add(new_resident)
-                db.session.commit()
-                flash('Resident has been added successfully')
-                return redirect(url_for('add_resident'))
-            except:
-                flash('There was an issue adding new resident')
-                return render_template('residents.html', form=form)
-        return render_template('residents.html', form=form)
+@app.route('/residents-signup', methods=['GET', 'POST'])
+def residents_signup():
+    form = ResidentForm()
+    if form.validate_on_submit():
+        id_number = form.id_number.data
+        title = form.title.data
+        first_name = form.first_name.data
+        surname = form.surname.data
+        gender = form.gender.data
+        email = form.email.data
+        address = form.address.data
+        car_reg = form.car_reg.data
+        phone = form.phone.data
+        category = 1
+        password = generate_password_hash(form.password.data, method='sha256')
+
+        f = form.upload.data
+        word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        filename = f'{word}{secure_filename(f.filename)[-4:]}'
+        f.save(os.path.join(basedir, 'static', 'photos', filename))
+        new_user = User(id_number=id_number, category=category, title=title,
+                        first_name=first_name, surname=surname, gender=gender, email=email, address=address,
+                        car_reg=car_reg, phone=phone, password=password, profile_image=filename)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('residents_signup'))
+    return render_template('resident_signup.html', form=form)
 
 
 @login_required
-@app.route('/resident/<int:resident_id>')
-def view_resident(resident_id):
-    if current_user.is_authenticated:
-        resident = Resident.query.get_or_404(resident_id)
-        return render_template('resident.html', resident=resident)
+@app.route('/visitors-signup', methods=['GET', 'POST'])
+def visitors_signup():
+    form = VisitorForm()
+    if form.validate_on_submit():
+        id_number = form.id_number.data
+        title = form.title.data
+        first_name = form.first_name.data
+        surname = form.surname.data
+        gender = form.gender.data
+        email = form.email.data
+        address = form.address.data
+        car_reg = form.car_reg.data
+        phone = form.phone.data
+        category = 2
+        password = generate_password_hash(form.password.data, method='sha256')
+
+        f = form.upload.data
+        word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        filename = f'{word}{secure_filename(f.filename)[-4:]}'
+        f.save(os.path.join(basedir, 'static', 'photos', filename))
+        new_user = User(id_number=id_number, category=category, title=title,
+                        first_name=first_name, surname=surname, gender=gender, email=email, address=address,
+                        car_reg=car_reg, phone=phone, password=password, profile_image=filename)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('visitors_signup'))
+    return render_template('visitor_signup.html', form=form)
 
 
 @login_required
-@app.route('/register', methods=['GET'])
+@app.route('/profile/<int:user_id>')
+def view_profile(user_id):
+    if current_user.is_authenticated:
+        user = User.query.get_or_404(user_id)
+        return render_template('resident_visitor.html', user=user)
+
+
+@login_required
+@app.route('/admin-profile/<int:user_id>')
+def view_admin_profile(user_id):
+    if current_user.is_authenticated:
+        user = User.query.get_or_404(user_id)
+        return render_template('admin.html', user=user)
+
+
+@app.route('/view-user-qrcode/<int:user_id>')
+def view_user_qrcode(user_id):
+    if current_user.is_authenticated:
+        user = User.query.get_or_404(user_id)
+        if user.is_admin():
+            return render_template('qrcode_admin.html', user=user)
+        else:
+            return render_template('qrcode_resident_visitor.html', user=user)
+
+
+@app.route('/generate-user-qr-code/<int:user_id>')
+def generate_user_qrcode(user_id):
+    if current_user.is_authenticated:
+        user = User.query.get_or_404(user_id)
+        ip_address = request.remote_addr
+        word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        data = f'http://{ip_address}:8000/verify/{word}'
+        img = qrcode.make(data)
+        filename = word + '.png'
+        user.qrcode_image = filename
+        user.qrcode_word = word
+        db.session.commit()
+        img.save(f'./static/qrcodes/{filename}')
+        if user.is_admin():
+            return render_template('qrcode_admin.html', user=user)
+        else:
+            return render_template('qrcode_resident_visitor.html', user=user)
+
+
+@app.route('/verify/<string:qrcode_word>')
+def register_add_user(qrcode_word):
+    user = User.query.filter_by(qrcode_word=qrcode_word).first()
+    if not user:
+        return render_template('unknown.html')
+
+    try:
+        user_to_register = Register.query.filter_by(user_id=user.id).order_by(desc(Register.id)).first()
+    except IndexError:
+        user_to_register = Register.query.filter_by(user_id=user.id)
+
+    if not user_to_register or not user_to_register.is_in():
+        now = datetime.datetime.now()
+        user_to_register = Register(user.id, now)
+
+        db.session.add(user_to_register)
+        db.session.commit()
+        return render_template('success.html', user=user)
+    elif user_to_register.is_in():
+        now = datetime.datetime.now()
+        user_to_register.time_out = now
+        db.session.commit()
+        return render_template('success.html', user=user)
+    else:
+        return render_template('unknown.html')
+
+
+@login_required
+@app.route('/register', methods=['GET', 'POST'])
 def view_register():
     if current_user.is_authenticated:
-        return render_template('register.html')
-
-
-@login_required
-@app.route('/visitor/<int:visitor_id>')
-def view_visitor(visitor_id):
-    if current_user.is_authenticated:
-        visitor = Visitor.query.get_or_404(visitor_id)
-        return render_template('visitor.html', visitor=visitor)
-
-
-@login_required
-@app.route('/delete/<int:resident_id>')
-def delete_resident(resident_id):
-    if current_user.is_authenticated:
-        resident_to_delete = Resident.query.get_or_404(resident_id)
-        try:
-            db.session.delete(resident_to_delete)
-            db.session.commit()
-            flash('The user has been deleted!')
-            return redirect(url_for('add_resident'))
-        except:
-            flash('There was an issue deleting the user!')
-            return redirect(url_for('add_resident'))
-
-
-@login_required
-@app.route('/register-visitor/<int:resident_id>')
-def register_resident(resident_id):
-    form = VisitorForm()
-    session['resident_id'] = resident_id
-    return render_template('visitors.html', form=form)
-
-
-@login_required
-@app.route('/register/<int:resident_id>/<int:visitor_id>', methods=['GET', 'POST'])
-def register_visitor(resident_id, visitor_id):
-    if current_user.is_authenticated:
-        register = Register(visitor_id, resident_id)
-        try:
-            db.session.add(register)
-            db.session.commit()
-            flash('Vistor has been added to register!')
-            return render_template('register.html')
-        except:
-            flash('There was an issue registering the user!')
-            return render_template('register.html')
-
-
-@login_required
-@app.route('/update-register/<int:register_id>', methods=['GET', 'POST'])
-def update_register(register_id):
-    if current_user.is_authenticated:
-        register_to_update = Register.query.get_or_404(register_id)
-        now = datetime.datetime.now()
-        try:
-            register_to_update.time_out = now
-            db.session.commit()
-            flash('Vistor has been checked out!')
-            return render_template('register.html')
-        except:
-            flash('There was an issue checking out the visitor. please try again')
-            return render_template('register.html')
-
-
-@app.route("/ajaxlivesearch", methods=["POST", "GET"])
-def ajaxlivesearch():
-    if request.method == 'POST':
-        try:
-            search_word = request.form['query']
-        except KeyError:
-            search_word = ''
-        if search_word == '':
-            residents = Resident.query.order_by(desc(Resident.id)).limit(10)
-        else:
-            search = "%{}%".format(search_word)
-            residents = Resident.query.filter(or_(Resident.first_name.like(search),
-                                                  Resident.surname.like(search),
-                                                  Resident.email.like(search))).all()
-        return jsonify({'htmlresponse': render_template('response.html', residents=residents)})
-
-
-@login_required
-@app.route('/add-visitor', methods=['GET', 'POST'])
-def add_visitor():
-    if current_user.is_authenticated:
-        user = current_user.id
-        form = VisitorForm()
-        if form.validate_on_submit():
-            f = form.upload.data
-            filename = f'{form.first_name.data}_{form.surname.data}_visitor_{secure_filename(f.filename)[-4:]}'
-            f.save(os.path.join(basedir, 'static', 'photos', filename))
-            new_visitor = Visitor(user, form.id_number.data, form.title.data, form.first_name.data, form.surname.data,
-                                  form.gender.data, form.address.data, form.car_reg.data, form.email.data,
-                                  form.phone.data, filename)
-            try:
-                db.session.add(new_visitor)
-                db.session.commit()
-                flash('Visitor has been added successfully')
-                return redirect(url_for('add_visitor'))
-            except:
-                flash('There was an issue adding new visitor')
-                return render_template('visitors.html', form=form)
-        return render_template('visitors.html', form=form)
-
-
-@app.route("/ajaxlivesearchVisitors", methods=["POST", "GET"])
-def ajaxlivesearchVisitors():
-    if request.method == 'POST':
-        try:
-            search_word = request.form['query']
-            resident_id = session['resident_id']
-        except KeyError:
-            search_word = ''
-            resident_id = 1
-        if search_word == '':
-            visitors = Visitor.query.order_by(desc(Visitor.id)).limit(10)
-        else:
-            search = "%{}%".format(search_word)
-            visitors = Visitor.query.filter(or_(Visitor.first_name.like(search),
-                                                Visitor.surname.like(search),
-                                                Visitor.email.like(search))).all()
-        return jsonify(
-            {'htmlresponse': render_template('response_visitors.html', visitors=visitors, resident_id=resident_id)})
+        user = current_user
+        return render_template('register.html', user=user)
 
 
 @app.route("/ajaxlivesearchRegister", methods=["POST", "GET"])
@@ -265,23 +265,89 @@ def ajaxlivesearchRegister():
             register = Register.query.order_by(desc(Register.id)).limit(10)
         else:
             search = "%{}%".format(search_word)
-            register = Register.query.filter(or_(Register.visitor.has(Visitor.first_name.like(search)),
-                                                 Register.visitor.has(Visitor.surname.like(search)))).all()
+            register = Register.query.filter(or_(Register.user.has(User.first_name.like(search)),
+                                                 Register.user.has(User.surname.like(search)))).all()
         return jsonify({'htmlresponse': render_template('response_register.html', register=register)})
+
+
+@login_required
+@app.route('/visitors', methods=['GET', 'POST'])
+def view_visitors():
+    if current_user.is_authenticated:
+        user = current_user
+        return render_template('visitors.html', user=user)
+
+
+@app.route("/ajaxlivesearchVisitors", methods=["POST", "GET"])
+def ajaxlivesearchVisitors():
+    if request.method == 'POST':
+        try:
+            search_word = request.form['query']
+        except KeyError:
+            search_word = ''
+        if search_word == '':
+            visitors = User.query.filter_by(category=2).order_by(desc(User.id)).limit(10)
+        else:
+            search = "%{}%".format(search_word)
+            visitors = User.query.filter_by(category=2).filter(or_(User.first_name.like(search),
+                                                                   User.surname.like(search),
+                                                                   User.email.like(search))).all()
+        return jsonify({'htmlresponse': render_template('response_visitors.html', visitors=visitors)})
+
+
+@login_required
+@app.route('/residents', methods=['GET', 'POST'])
+def view_residents():
+    if current_user.is_authenticated:
+        user = current_user
+        return render_template('residents.html', user=user)
+
+
+@app.route("/ajaxlivesearch", methods=["POST", "GET"])
+def ajaxlivesearch():
+    if request.method == 'POST':
+        try:
+            search_word = request.form['query']
+        except KeyError:
+            search_word = ''
+        if search_word == '':
+            residents = User.query.filter_by(category=1).order_by(desc(User.id)).limit(10)
+        else:
+            search = "%{}%".format(search_word)
+            residents = User.query.filter_by(category=1).filter(or_(User.first_name.like(search),
+                                                                    User.surname.like(search),
+                                                                    User.email.like(search))).all()
+
+        return jsonify({'htmlresponse': render_template('response.html', residents=residents)})
+
+
+@login_required
+@app.route('/delete-resident/<int:resident_id>')
+def delete_resident(resident_id):
+    if current_user.is_authenticated:
+        resident_to_delete = User.query.get_or_404(resident_id)
+        try:
+            db.session.delete(resident_to_delete)
+            db.session.commit()
+            flash('The user has been deleted!')
+            return redirect(url_for('view_residents'))
+        except:
+            flash('There was an issue deleting the user!')
+            return redirect(url_for('view_residents'))
 
 
 @app.route('/delete-visitor/<int:visitor_id>')
 def delete_visitor(visitor_id):
     if current_user.is_authenticated:
-        visitor_to_delete = Visitor.query.get_or_404(visitor_id)
+        visitor_to_delete = User.query.get_or_404(visitor_id)
         try:
             db.session.delete(visitor_to_delete)
             db.session.commit()
             flash('The visitor has been deleted!')
-            return redirect(url_for('add_visitor'))
+            return redirect(url_for('view_visitors'))
         except:
             flash('There was an issue deleting the visitor!')
-            return redirect(url_for('add_visitor'))
+            return redirect(url_for('view_visitors'))
 
 
 if __name__ == '__main__':

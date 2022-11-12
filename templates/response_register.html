@@ -2,25 +2,23 @@
 <table id="register" style="background: white">
     <thead>
         <tr>
-            <th>Visitor name</th>
-            <th>Host name</th>
-            <th>House Number</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Address</th>
+            <th>Phone</th>
             <th>Time In</th>
             <th>Time Out</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
         {% for item in register %}
         <tr>
-            <td>{{item.visitor.first_name}} {{item.visitor.surname}}</td>
-            <td>{{item.resident.first_name}} {{item.resident.surname}}</td>
-            <td>{{item.resident.house_number}}</td>
+            <td>{{item.user.first_name}}</td>
+            <td>{{item.user.surname}}</td>
+            <td>{{item.user.address}}</td>
+            <td>{{item.user.phone}}</td>
             <td>{{item.time_in}}</td>
             <td>{{item.time_out}}</td>
-            <td>
-                <a href="/update-register/{{item.id}}">Check Out</a><br>
-            </td>
         </tr>
         {% endfor %}
     </table>

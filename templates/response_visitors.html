@@ -24,14 +24,13 @@ $(document).ready(function() {
     <tbody>
         {% for visitor in visitors %}
         <tr>
-            <td><a href="/visitor/{{visitor.id}}">{{visitor.first_name}}</a></td>
+            <td><a href="/admin-profile/{{visitor.id}}">{{visitor.first_name}}</a></td>
             <td>{{visitor.surname}}</td>
             <td>{{visitor.phone}}</td>
             <td>{{visitor.email}}</td>
             <td>{{visitor.address}}</td>
             <td>
-                <a href="/delete-visitor/{{visitor.id}}">Delete</a><br>
-                <a href="/register/{{resident_id}}/{{visitor.id}}">Add to register</a>
+                <a class="other-links" href="/delete-visitor/{{visitor.id}}">Delete</a><br>
             </td>
         </tr>
         {% endfor %}
