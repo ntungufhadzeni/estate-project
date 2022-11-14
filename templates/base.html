@@ -7,16 +7,15 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type='text/javascript'>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script>
 $(document).ready(function(){
   load_data();
   function load_data(query)
   {
    $.ajax({
-    url:"/ajaxlivesearch",
+    url:"/ajax-live-search-residents",
     method:"POST",
     data:{query:query},
     success:function(data)
@@ -44,7 +43,7 @@ $(document).ready(function(){
   function load_data(query)
   {
    $.ajax({
-    url:"/ajaxlivesearchVisitors",
+    url:"/ajax-live-search-visitors",
     method:"POST",
     data:{query:query},
     success:function(data)
@@ -72,7 +71,7 @@ $(document).ready(function(){
   function load_data(query)
   {
    $.ajax({
-    url:"/ajaxlivesearchRegister",
+    url:"/ajax-live-search-register",
     method:"POST",
     data:{query:query},
     success:function(data)

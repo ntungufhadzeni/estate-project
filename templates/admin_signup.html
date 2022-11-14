@@ -10,8 +10,23 @@
                     <h2>Admin SignUp</h2> <hr>
                 </div>
                 <div class="mb-sm-2">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-primary" role="alert">
+                                    {{ message }} <a class="other-links" href="{{url_for('login')}}">Click here to login</a>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="mb-sm-2">
+                    <p style="font-weight: lighter; color: black; font-size: 12px">All fields with '*' are required</p>
+                </div>
+                <div class="mb-sm-2">
+                <div class="mb-sm-2">
                     {{ form.admin_number.label }}<br>
-                    {{ form.admin_number(placeholder="Admin number") }}<br>
+                    {{ form.admin_number(placeholder="Your admin number") }}<br>
                     {% if form.admin_number.errors %}
                         <ul class="errors">
                             {% for error in form.admin_number.errors %}
@@ -22,7 +37,7 @@
                 </div>
                 <div class="mb-sm-2">
                     {{ form.id_number.label }}<br>
-                    {{ form.id_number }}<br>
+                    {{ form.id_number(placeholder="Your ID/passport number") }}<br>
                     {% if form.id_number.errors %}
                         <ul class="errors">
                             {% for error in form.id_number.errors %}
@@ -44,7 +59,7 @@
                 </div>
                 <div class="mb-sm-2">
                     {{ form.first_name.label }}<br>
-                    {{ form.first_name }}<br>
+                    {{ form.first_name(placeholder="Your first names") }}<br>
                     {% if form.first_name.errors %}
                         <ul class="errors">
                         {% for error in form.first_name.errors %}
@@ -55,7 +70,7 @@
                 </div>
                 <div class="mb-sm-2">
                     {{ form.surname.label }}<br>
-                    {{ form.surname }}<br>
+                    {{ form.surname(placeholder="Your surname") }}<br>
                     {% if form.surname.errors %}
                         <ul class="errors">
                         {% for error in form.surname.errors %}
@@ -76,11 +91,11 @@
                     {% endif %}
                 </div>
                 <div class="mb-sm-2">
-                    {{ form.house_number.label }}<br>
-                    {{ form.house_number }}<br>
-                    {% if form.house_number.errors %}
+                    {{ form.address.label }}<br>
+                    {{ form.address(placeholder="Your address e.g. 11 Thora Cres") }}<br>
+                    {% if form.address.errors %}
                         <ul class="errors">
-                        {% for error in form.house_number.errors %}
+                        {% for error in form.address.errors %}
                             <li>{{ error }}</li>
                         {% endfor %}
                         </ul>
@@ -88,7 +103,7 @@
                 </div>
                 <div class="mb-sm-2">
                     {{ form.car_reg.label }}<br>
-                    {{ form.car_reg }}<br>
+                    {{ form.car_reg(placeholder="SV45TTGP") }}<br>
                     {% if form.car_reg.errors %}
                         <ul class="errors">
                         {% for error in form.car_reg.errors %}
@@ -98,19 +113,8 @@
                     {% endif %}
                 </div>
                 <div class="mb-sm-2">
-                    {{ form.email.label }}<br>
-                    {{ form.email }}<br>
-                    {% if form.email.errors %}
-                        <ul class="errors">
-                        {% for error in form.email.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-                <div class="mb-sm-2">
                     {{ form.phone.label }}<br>
-                    {{ form.phone }}<br>
+                    {{ form.phone(placeholder="Your cellphone e.g. 0723334444") }}<br>
                     {% if form.phone.errors %}
                         <ul class="errors">
                         {% for error in form.phone.errors %}
@@ -120,8 +124,19 @@
                     {% endif %}
                 </div>
                 <div class="mb-sm-2">
+                    {{ form.email.label }}<br>
+                    {{ form.email(placeholder="Your email e.g. you@example.com") }}<br>
+                    {% if form.email.errors %}
+                        <ul class="errors">
+                        {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+                <div class="mb-sm-2">
                     {{ form.password.label }}<br>
-                    {{ form.password }}<br>
+                    {{ form.password(placeholder="Type your password") }}<br>
                     {% if form.password.errors %}
                         <ul class="errors">
                         {% for error in form.password.errors %}
@@ -132,7 +147,7 @@
                 </div>
                 <div class="mb-sm-2">
                     {{ form.confirmPassword.label }}<br>
-                    {{ form.confirmPassword }}<br>
+                    {{ form.confirmPassword(placeholder="Retype your password") }}<br>
                     {% if form.confirmPassword.errors %}
                         <ul class="errors">
                         {% for error in form.confirmPassword.errors %}
@@ -141,7 +156,7 @@
                         </ul>
                     {% endif %}
                 </div>
-                <div class="mb-sm-2">
+                <div class="mb-3">
                     {{ form.upload.label }}<br>
                     {{ form.upload }}<br>
                     {% if form.upload.errors %}
@@ -152,21 +167,10 @@
                         </ul>
                     {% endif %}
                 </div>
-                <div class="mb-sm-2">
+                <div class="mb-3">
                     {{ form.submit() }}
                 </div>
             </form>
-            <div class="mb-sm-2">
-                {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                            {% for message in messages %}
-                                <div class="alert alert-primary" role="alert">
-                                    {{ message }} <a class="other-links" href="{{url_for('login')}}">Click here to login</a>
-                                </div>
-                    {% endfor %}
-                {% endif %}
-                {% endwith %}
-            </div>
         </div>
     <div>
     </div>

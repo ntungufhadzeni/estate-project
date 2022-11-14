@@ -916,7 +916,8 @@ input[type=submit]:hover {
 }
 
 .main-page {
-    background: url("../images/city.jpg");
+    background-image: url("../images/city.jpg");
+    background-size: cover;
     padding-bottom: 50px;
     padding-top: 80px;
 }
@@ -973,7 +974,7 @@ font-size: 65px
 }
 .index {
   background-color: black;
-  opacity: 0.6;
+  opacity: 0.8;
     border-radius: 5px;
     padding: 20px;
 }
@@ -1144,7 +1145,7 @@ form.search input[type=text] {
 .verify-container {
     margin: 50px;
     padding: 50px;
-	height: 500px;
+	height: 650px;
 	border-radius: 30px;
 	background-color: #ffffff;
 	box-shadow: 5px 10px #888888;

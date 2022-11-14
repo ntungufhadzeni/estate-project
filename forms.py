@@ -20,7 +20,7 @@ from wtforms.validators import (
 from models import User
 
 titles = [('mr', 'Mr'), ('mrs', 'Mrs'), ('ms', 'Ms'), ('miss', 'Miss'), ('dr', 'Dr'), ('prof', 'Prof')]
-genders = [('male', 'Male'), ('female', 'Female'), ('non-binary', 'Non-Binary')]
+genders = [('male', 'Male'), ('female', 'Female'), ('non-binary', 'Non-Binary'), ('other', 'Other')]
 
 
 def validate_phone(form, field):
@@ -36,12 +36,6 @@ def login_check(form, field):
         raise ValidationError('Username or password is incorrect')
 
 
-def admin_number_validator(form, field):
-    user = User.query.filter_by(email=form.email.data).first()
-    if not user.admin_number == form.admin_number.data:
-        raise ValidationError('Admin number is incorrect')
-
-
 def unique_admin_validator(form, field):
     user = User.query.filter_by(admin_number=form.admin_number.data).first()
     if user:
@@ -54,76 +48,76 @@ def unique_email_validator(form, field):
         raise ValidationError('This email is already in use. Please try another one.')
 
 
-def unique_validator_resident(form, field):
-    resident = User.query.filter_by(id_number=form.id_number.data).first()
-    if resident:
+def unique_id_validator(form, field):
+    user = User.query.filter_by(id_number=form.id_number.data).first()
+    if user:
         raise ValidationError('This ID number is already in use. Please try another one.')
 
 
-def unique_validator_visitor(form, field):
-    visitor = User.query.filter_by(id_number=form.id_number.data).first()
-    if visitor:
-        raise ValidationError('This ID number is already in use. Please try another one.')
+def unique_phone_validator(form, field):
+    user = User.query.filter_by(phone=form.phone.data).first()
+    if user:
+        raise ValidationError('This cellphone number is already in use. Please try another one.')
 
 
 class LoginForm(FlaskForm):
     email = StringField(
-        'Email',
+        'Email*',
         [
             Email(message='Not a valid email address.'),
             DataRequired(message="Please enter your email address")
         ]
     )
     password = PasswordField(
-        'Password',
+        'Password*',
         [
             DataRequired(message="Please enter a password"),
             login_check
         ]
     )
-    remember_me = BooleanField('Remember Me')
+    remember_me = BooleanField('Remember me')
     submit = SubmitField('Sign In')
 
 
 class AdminForm(FlaskForm):
     admin_number = IntegerField(
-        'Admin Number',
+        'Admin Number*',
         [
             DataRequired(message="This field is required"),
             unique_admin_validator
         ]
     )
     id_number = IntegerField(
-        'ID/Passport Number',
+        'ID/Passport Number*',
         [
             DataRequired(message="This field is required"),
-            unique_validator_visitor
+            unique_id_validator
         ]
     )
     title = SelectField(
-        'Title',
+        'Title*',
         choices=titles,
         validators=[DataRequired(message="This field is required")]
     )
     first_name = StringField(
-        'First Name',
+        'First Names*',
         [
             DataRequired(message="This field is required")
         ]
     )
     surname = StringField(
-        'Surname',
+        'Surname*',
         [
             DataRequired(message="This field is required")
         ]
     )
     gender = SelectField(
-        'Gender',
+        'Gender*',
         choices=genders,
         validators=[DataRequired(message="This field is required")]
     )
-    house_number = IntegerField(
-        'House No.',
+    address = StringField(
+        'Address*',
         [
             DataRequired(message="This field is required")
         ]
@@ -135,7 +129,7 @@ class AdminForm(FlaskForm):
         ]
     )
     email = StringField(
-        'Email',
+        'Email*',
         [
             Email(message='Not a valid email address'),
             DataRequired(message="This field is required"),
@@ -143,21 +137,22 @@ class AdminForm(FlaskForm):
         ]
     )
     phone = StringField(
-        'Cellphone',
+        'Cellphone*',
         [
             DataRequired(message="This field is required"),
-            validate_phone
+            validate_phone,
+            unique_phone_validator
         ]
     )
     password = PasswordField(
-        'Password',
+        'Password*',
         [
             InputRequired(),
             EqualTo('confirmPassword', message='Passwords must match')
         ]
     )
-    confirmPassword = PasswordField('Repeat Password')
-    upload = FileField('Profile Picture', validators=[
+    confirmPassword = PasswordField('Repeat Password*')
+    upload = FileField('Profile Picture*', validators=[
         FileRequired(),
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
@@ -166,31 +161,31 @@ class AdminForm(FlaskForm):
 
 class ResidentForm(FlaskForm):
     id_number = IntegerField(
-        'ID/Passport Number',
+        'ID/Passport Number*',
         [
             DataRequired(message="This field is required"),
-            unique_validator_visitor
+            unique_id_validator
         ]
     )
     title = SelectField(
-        'Title',
+        'Title*',
         choices=titles,
         validators=[DataRequired(message="This field is required")]
     )
     first_name = StringField(
-        'First Name',
+        'First Names*',
         [
             DataRequired(message="This field is required")
         ]
     )
     surname = StringField(
-        'Surname',
+        'Surname*',
         [
             DataRequired(message="This field is required")
         ]
     )
     gender = SelectField(
-        'Gender',
+        'Gender*',
         choices=genders,
         validators=[DataRequired(message="This field is required")]
     )
@@ -207,7 +202,7 @@ class ResidentForm(FlaskForm):
         ]
     )
     email = StringField(
-        'Email',
+        'Email*',
         [
             Email(message='Not a valid email address'),
             DataRequired(message="This field is required"),
@@ -215,21 +210,22 @@ class ResidentForm(FlaskForm):
         ]
     )
     phone = StringField(
-        'Cellphone',
+        'Cellphone*',
         [
             DataRequired(message="This field is required"),
-            validate_phone
+            validate_phone,
+            unique_phone_validator
         ]
     )
     password = PasswordField(
-        'Password',
+        'Password*',
         [
             InputRequired(),
             EqualTo('confirmPassword', message='Passwords must match')
         ]
     )
-    confirmPassword = PasswordField('Repeat Password')
-    upload = FileField('Profile Picture', validators=[
+    confirmPassword = PasswordField('Repeat Password*')
+    upload = FileField('Profile Picture*', validators=[
         FileRequired(),
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
@@ -238,48 +234,45 @@ class ResidentForm(FlaskForm):
 
 class VisitorForm(FlaskForm):
     id_number = IntegerField(
-        'ID/Passport Number',
+        'ID/Passport Number*',
         [
             DataRequired(message="This field is required"),
-            unique_validator_visitor
+            unique_id_validator
         ]
     )
     title = SelectField(
-        'Title',
+        'Title*',
         choices=titles,
         validators=[DataRequired(message="This field is required")]
     )
     first_name = StringField(
-        'First Name',
+        'First Names*',
         [
             DataRequired(message="This field is required")
         ]
     )
     surname = StringField(
-        'Surname',
+        'Surname*',
         [
             DataRequired(message="This field is required")
         ]
     )
     gender = SelectField(
-        'Gender',
+        'Gender*',
         choices=genders,
         validators=[DataRequired(message="This field is required")]
     )
     address = StringField(
-        'Address',
+        'Address*',
         [
             DataRequired(message="This field is required")
         ]
     )
     car_reg = StringField(
-        'Car Registration',
-        [
-            DataRequired(message="This field is required")
-        ]
+        'Car Registration'
     )
     email = StringField(
-        'Email',
+        'Email*',
         [
             Email(message='Not a valid email address'),
             DataRequired(),
@@ -287,21 +280,22 @@ class VisitorForm(FlaskForm):
         ]
     )
     phone = StringField(
-        'Cellphone',
+        'Cellphone*',
         [
             DataRequired(message="This field is required"),
-            validate_phone
+            validate_phone,
+            unique_phone_validator
         ]
     )
     password = PasswordField(
-        'Password',
+        'Password*',
         [
             InputRequired(),
             EqualTo('confirmPassword', message='Passwords must match')
         ]
     )
-    confirmPassword = PasswordField('Repeat Password')
-    upload = FileField('Profile Picture', validators=[
+    confirmPassword = PasswordField('Repeat Password*')
+    upload = FileField('Profile Picture*', validators=[
         FileRequired(),
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])

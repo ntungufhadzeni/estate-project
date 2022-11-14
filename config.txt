@@ -1,0 +1,5 @@
+[email]
+server = smtp.mail.yahoo.com
+email = ssmartssystems@yahoo.com
+password = BS8CF3!xNE+gvkq
+port = 587

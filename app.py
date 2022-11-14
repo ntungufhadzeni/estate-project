@@ -13,6 +13,7 @@ import random
 
 from forms import LoginForm, AdminForm, ResidentForm, VisitorForm
 from models import db, User, Register
+from send_email import send_email
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 qrcode_path = os.path.join(basedir, 'static', 'qrcodes')
@@ -23,6 +24,25 @@ if not os.path.exists(photos_path):
 
 if not os.path.exists(qrcode_path):
     os.makedirs(qrcode_path)
+
+
+def unique_photo_filename():
+    word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+    user = User.query.filter(User.profile_image.like(word)).first()
+    if user:
+        unique_photo_filename()
+    else:
+        return word
+
+
+def unique_qrcode_filename():
+    word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+    user = User.query.filter_by(qrcode_word=word).first()
+    if user:
+        unique_qrcode_filename()
+    else:
+        return word
+
 
 app = Flask(__name__, template_folder='./templates')
 app.config['SECRET_KEY'] = os.urandom(15)
@@ -45,9 +65,9 @@ def server_error(e):
     return render_template("500.html"), 500
 
 
-@app.errorhandler(400)
+@app.errorhandler(404)
 def not_found(e):
-    return render_template("400.html"), 400
+    return render_template("404.html"), 404
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -77,14 +97,14 @@ def admin_signup():
         surname = form.surname.data
         gender = form.gender.data
         email = form.email.data
-        address = form.house_number.data
+        address = form.address.data
         car_reg = form.car_reg.data
         phone = form.phone.data
         category = 0
         password = generate_password_hash(form.password.data, method='sha256')
 
         f = form.upload.data
-        word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        word = unique_photo_filename()
         filename = f'{word}{secure_filename(f.filename)[-4:]}'
         f.save(os.path.join(basedir, 'static', 'photos', filename))
         new_user = User(admin_number=admin_number, id_number=id_number, category=category, title=title,
@@ -130,7 +150,7 @@ def residents_signup():
         password = generate_password_hash(form.password.data, method='sha256')
 
         f = form.upload.data
-        word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        word = unique_photo_filename()
         filename = f'{word}{secure_filename(f.filename)[-4:]}'
         f.save(os.path.join(basedir, 'static', 'photos', filename))
         new_user = User(id_number=id_number, category=category, title=title,
@@ -161,7 +181,7 @@ def visitors_signup():
         password = generate_password_hash(form.password.data, method='sha256')
 
         f = form.upload.data
-        word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        word = unique_photo_filename()
         filename = f'{word}{secure_filename(f.filename)[-4:]}'
         f.save(os.path.join(basedir, 'static', 'photos', filename))
         new_user = User(id_number=id_number, category=category, title=title,
@@ -205,7 +225,7 @@ def generate_user_qrcode(user_id):
     if current_user.is_authenticated:
         user = User.query.get_or_404(user_id)
         ip_address = request.remote_addr
-        word = ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(10))
+        word = unique_qrcode_filename()
         data = f'http://{ip_address}:8000/verify/{word}'
         img = qrcode.make(data)
         filename = word + '.png'
@@ -213,6 +233,8 @@ def generate_user_qrcode(user_id):
         user.qrcode_word = word
         db.session.commit()
         img.save(f'./static/qrcodes/{filename}')
+        file_path = os.path.join(basedir, 'static', 'qrcodes', filename)
+        # send_email(file_path, user.first_name, user.email)
         if user.is_admin():
             return render_template('qrcode_admin.html', user=user)
         else:
@@ -236,12 +258,16 @@ def register_add_user(qrcode_word):
 
         db.session.add(user_to_register)
         db.session.commit()
-        return render_template('success.html', user=user)
+        check = "Check-In"
+        tm = f"Time: {now.strftime('%H:%M')}"
+        return render_template('success.html', user=user, check=check, tm=tm)
     elif user_to_register.is_in():
         now = datetime.datetime.now()
         user_to_register.time_out = now
         db.session.commit()
-        return render_template('success.html', user=user)
+        check = "Check-Out"
+        tm = f"Time: {now.strftime('%H:%M')}"
+        return render_template('success.html', user=user, check=check, tm=tm)
     else:
         return render_template('unknown.html')
 
@@ -254,8 +280,8 @@ def view_register():
         return render_template('register.html', user=user)
 
 
-@app.route("/ajaxlivesearchRegister", methods=["POST", "GET"])
-def ajaxlivesearchRegister():
+@app.route("/ajax-live-search-register", methods=["POST", "GET"])
+def ajax_live_search_register():
     if request.method == 'POST':
         try:
             search_word = request.form['query']
@@ -278,8 +304,8 @@ def view_visitors():
         return render_template('visitors.html', user=user)
 
 
-@app.route("/ajaxlivesearchVisitors", methods=["POST", "GET"])
-def ajaxlivesearchVisitors():
+@app.route("/ajax-live-search-visitors", methods=["POST", "GET"])
+def ajax_live_search_Visitors():
     if request.method == 'POST':
         try:
             search_word = request.form['query']
@@ -303,8 +329,8 @@ def view_residents():
         return render_template('residents.html', user=user)
 
 
-@app.route("/ajaxlivesearch", methods=["POST", "GET"])
-def ajaxlivesearch():
+@app.route("/ajax-live-search-residents", methods=["POST", "GET"])
+def ajax_live_search_residents():
     if request.method == 'POST':
         try:
             search_word = request.form['query']
@@ -318,7 +344,7 @@ def ajaxlivesearch():
                                                                     User.surname.like(search),
                                                                     User.email.like(search))).all()
 
-        return jsonify({'htmlresponse': render_template('response.html', residents=residents)})
+        return jsonify({'htmlresponse': render_template('response_residents.html', residents=residents)})
 
 
 @login_required
