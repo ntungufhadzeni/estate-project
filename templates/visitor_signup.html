@@ -21,9 +21,6 @@
                     {% endwith %}
                 </div>
                 <div class="mb-sm-2">
-                    <p style="font-weight: lighter; color: black; font-size: 12px">All fields with '*' are required</p>
-                </div>
-                <div class="mb-sm-2">
                     {{ form.id_number.label }}<br>
                     {{ form.id_number(placeholder="Your ID/passport number") }}<br>
                     {% if form.id_number.errors %}
