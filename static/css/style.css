@@ -4,15 +4,15 @@
 /* font-family: 'Courier Prime', monospace;
 font-family: 'Heebo', sans-serif; */
 :root {
-  --primaryColor: #1E90FF;
+  --primaryColor: darkblue;
   --primaryDarkColor: #005596;
-  --primaryHoverColor: #1BB3F5;
+  --primaryHoverColor: darkblue;
   --secondaryColor: #F9B000;
   --baseColor: #21243D;
-  --baseFont: 'IBM Plex Sans Condensed', sans-serif;
-  --titleFont: 'Courier Prime', monospace;
+  --baseFont: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --titleFont: 'Segoe UI', monospace;
   --regular: 400;
-  --medium: 500;
+  --medium: 550;
   --bold: 700;
   --black: 900;
   --lightBg: #FBFCF8;
@@ -82,6 +82,7 @@ a, .btn {
   background-color: var(--bs-white);
     border: 1px solid var(--primaryColor);
   color: var(--primaryColor);
+    border-radius: 1px;
 }
 .btnPrimary:hover {
   background-color: var(--primaryColor);
@@ -173,7 +174,7 @@ a, .btn {
 	text-align: right;
 }
 .navCol a {
-	font-size: 20px;
+	font-size: 18px;
 	color: #000;
   font-weight: var(--medium);
   display: inline-block;
@@ -895,15 +896,15 @@ input[type=text], input[type=email], input[type=password], input[type=number], s
 
 input[type=submit] {
   background-color: var(--bs-white);
-    border: 1px solid dodgerblue;
-  color: dodgerblue;
+    border: 1px solid darkblue;
+  color: darkblue;
     font-size: 14px;
   font-weight: var(--medium);
   padding: 8px 20px;
     border-radius: 25px;
 }
 input[type=submit]:hover {
-  background-color: dodgerblue;
+  background-color: darkblue;
   color: var(--bs-white);
 }
 
@@ -913,7 +914,8 @@ input[type=submit]:hover {
     margin: auto;
     border-radius: 10px;
     background-color: #e6e6e6;
-    color: #0a53be;
+    color: darkblue;
+    opacity: 0.9;
 }
 
 .main-page {
@@ -928,18 +930,17 @@ input[type=submit]:hover {
     padding: 80px;
     color: #ffffff;
     position: relative;
+    opacity: 0.9;
 }
 
 .content .par{
     padding-left: 20px;
     padding-bottom: 25px;
-    font-family: Arial;
     letter-spacing: 1.2px;
     line-height: 30px;
 }
 
 .content h1{
-    font-family: 'Times New Roman';
     font-size: 25px;
     padding-left: 20px;
     margin-top: 9%;
@@ -1008,7 +1009,8 @@ font-size: 65px
     margin: auto;
     border-radius: 10px;
     background-color: #e6e6e6;
-    color: #0a53be;
+    color: darkblue;
+    opacity: 0.9;
 }
 
 .errors {
@@ -1075,19 +1077,18 @@ font-size: 65px
 table#visitor {
     border-collapse: collapse;
 }
-#visitor tr {
-    background-color: #eee;
-    border-top: 1px solid #fff;
+#visitor tr, #visitor td{
+     background-color: #fff;
+     border-bottom: 1px solid black !important;
+    padding-right: 10px;
 }
 #visitor tr:hover {
-    background-color: #ccc;
+    color: grey;
 }
 #visitor th {
     background-color: #fff;
 }
-#visitor th, #visitor td {
-    padding: 3px 5px;
-}
+
 #visitor td:hover {
     cursor: pointer;
 }
@@ -1102,11 +1103,10 @@ table#register {
 #register tr:hover {
     background-color: #ccc;
 }
-#register th {
+#register th,  #register td{
     background-color: #fff;
-}
-#register th, #register td {
-    padding: 3px 5px;
+     border-bottom: 1px solid black !important;
+    padding-right: 10px;
 }
 #register td:hover {
     cursor: pointer;
@@ -1115,18 +1115,17 @@ table#register {
 table#residents {
     border-collapse: collapse;
 }
-#residents tr {
-    background-color: #eee;
-    border-top: 1px solid #fff;
+#residents tr, #residents td {
+     background-color: #fff;
+     border-bottom: 1px solid black !important;
+    padding-right: 10px;
 }
 #residents tr:hover {
-    background-color: #ccc;
+    color: grey;
 }
 #residents th {
     background-color: #fff;
-}
-#residents th, #residents td {
-    padding: 3px 5px;
+    padding-right: 10px;
 }
 #residents td:hover {
     cursor: pointer;
@@ -1167,4 +1166,12 @@ form.search input[type=text] {
 
 .other-links:hover {
     color: #1BB3F5;
+}
+
+input[type=checkbox]:checked {
+text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+font-size: 15px;
+color: #f3f3f3;
+text-align: center;
+line-height: 15px;
 }

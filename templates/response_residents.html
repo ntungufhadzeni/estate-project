@@ -30,7 +30,7 @@ $(document).ready(function() {
             <td>{{resident.email}}</td>
             <td>{{resident.address}}</td>
             <td>
-                <a class="other-links" href="/delete-resident/{{resident.id}}">Delete</a><br>
+                <a href="/delete-resident/{{resident.id}}" class="btnPrimary">Delete</a><br>
             </td>
         </tr>
         {% endfor %}

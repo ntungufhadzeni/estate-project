@@ -156,7 +156,7 @@ class AdminForm(FlaskForm):
         FileRequired(),
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
-    submit = SubmitField('SignUp')
+    submit = SubmitField('Sign Up')
 
 
 class ResidentForm(FlaskForm):
@@ -229,7 +229,7 @@ class ResidentForm(FlaskForm):
         FileRequired(),
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
-    submit = SubmitField('SignUp')
+    submit = SubmitField('Sign Up')
 
 
 class VisitorForm(FlaskForm):
@@ -299,4 +299,4 @@ class VisitorForm(FlaskForm):
         FileRequired(),
         FileAllowed(['jpg', 'png'], 'Images only!')
     ])
-    submit = SubmitField('SignUp')
+    submit = SubmitField('Sign Up')
