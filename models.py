@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 import datetime
+from enums import Choice
 
 db = SQLAlchemy()
 
@@ -28,7 +29,7 @@ class User(UserMixin, db.Model):
         return f'User(first name: {self.first_name}, surname: {self.surname})'
 
     def is_admin(self) -> bool:
-        if self.category == 0:
+        if self.category == Choice.ADMIN.value:
             return True
         else:
             return False

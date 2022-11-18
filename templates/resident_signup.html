@@ -33,7 +33,7 @@
                 </div>
                 <div class="mb-sm-2">
                     {{ form.title.label }}<br>
-                    {{ form.title }}<br>
+                    {{ form.title(placeholder="Choose...") }}<br>
                     {% if form.title.errors %}
                         <ul class="errors">
                         {% for error in form.title.errors %}

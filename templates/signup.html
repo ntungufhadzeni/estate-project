@@ -1,0 +1,17 @@
+{% extends 'login_base.html' %}
+
+{% block title %} Sign Up {% endblock %}
+{% block content %}
+<div class="main-page">
+    <div class="content">
+        <div class="index">
+            <h3>Sign Up</h3><hr><br>
+            <p class="par">If you're an admin, click "Admin Sign Up" button. And if you're a visitor click "Visitor Sign Up".
+            Residents must click "Resident Sign Up" to sign up.</p>
+            <a href="{{ url_for('residents_signup') }}" class="btn">Resident Sign Up</a>
+            <a href="{{ url_for('visitors_signup') }}" class="btn">Visitor Sign Up</a>
+            <a href="{{ url_for('admin_signup') }}" class="btn">Admin Sign Up</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

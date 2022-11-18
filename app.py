@@ -14,6 +14,7 @@ import random
 from forms import LoginForm, AdminForm, ResidentForm, VisitorForm
 from models import db, User, Register
 from send_email import send_email
+from enums import Choice
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 qrcode_path = os.path.join(basedir, 'static', 'qrcodes')
@@ -100,7 +101,7 @@ def admin_signup():
         address = form.address.data
         car_reg = form.car_reg.data
         phone = form.phone.data
-        category = 0
+        category = Choice.ADMIN.value
         password = generate_password_hash(form.password.data, method='sha256')
 
         f = form.upload.data
@@ -120,6 +121,11 @@ def admin_signup():
 @app.route('/')
 def home():
     return render_template('index.html')
+
+
+@app.route('/signup')
+def signup():
+    return render_template('signup.html')
 
 
 @login_required
@@ -146,7 +152,7 @@ def residents_signup():
         address = form.address.data
         car_reg = form.car_reg.data
         phone = form.phone.data
-        category = 1
+        category = Choice.RESIDENT.value
         password = generate_password_hash(form.password.data, method='sha256')
 
         f = form.upload.data
@@ -177,7 +183,7 @@ def visitors_signup():
         address = form.address.data
         car_reg = form.car_reg.data
         phone = form.phone.data
-        category = 2
+        category = Choice.VISITOR.value
         password = generate_password_hash(form.password.data, method='sha256')
 
         f = form.upload.data

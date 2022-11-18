@@ -4,10 +4,10 @@
 /* font-family: 'Courier Prime', monospace;
 font-family: 'Heebo', sans-serif; */
 :root {
-  --primaryColor: darkblue;
-  --primaryDarkColor: #005596;
-  --primaryHoverColor: darkblue;
-  --secondaryColor: #F9B000;
+  --primaryColor: #005596;
+  --primaryDarkColor: #210070;
+  --primaryHoverColor: #005596;
+  --secondaryColor: #213970;
   --baseColor: #21243D;
   --baseFont: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   --titleFont: 'Segoe UI', monospace;
@@ -67,6 +67,9 @@ a, .btn {
 }
 .primaryDarkColor {
   color: var(--primaryDarkColor);
+}
+.secondaryColor {
+    color: var(--secondaryColor)
 }
 .lightBg {
   background-color: var(--lightBg);
@@ -150,7 +153,7 @@ a, .btn {
 
 
 .headerCol {
-  background-color: var(--lightBg);
+  background-color: #030E4F;
 	padding: 18px 0;
 	-webkit-transition: all 300ms ease-in-out 0s;
 	-o-transition: all 300ms ease-in-out 0s;
@@ -175,13 +178,13 @@ a, .btn {
 }
 .navCol a {
 	font-size: 18px;
-	color: #000;
+	color: #F49F1C;
   font-weight: var(--medium);
   display: inline-block;
   position: relative;
 }
 .navCol a:hover {
-  color: var(--primaryColor);
+  color: #F49F1C;
 }
 .navCol a::before {
   content: "";
@@ -191,7 +194,7 @@ a, .btn {
   bottom: 0;
   height: 2px;
   border-radius: 2px;
-  background-color: var(--primaryColor);
+  background-color: #F49F1C;
   -webkit-transition: all 500ms ease-in-out 0s;
   -o-transition: all 500ms ease-in-out 0s;
   transition: all 500ms ease-in-out 0s;
@@ -209,7 +212,7 @@ a, .btn {
   right: 0;
 }
 .navCol a.active {
-  color: var(--primaryColor);
+  color: #F49F1C;
 }
 .navCol li {
 	display: inline-block;
@@ -231,7 +234,7 @@ a, .btn {
 	-webkit-transition: background-color 500ms ease-in-out 250ms;
   -o-transition: background-color 500ms ease-in-out 250ms;
   transition: background-color 500ms ease-in-out 250ms;
-	background-color: #000;
+	background-color: #F49F1C;
 	border: 1px solid rgba(0,0,0,0.2);
   margin-left: auto;
 }
@@ -928,9 +931,9 @@ input[type=submit]:hover {
 .content{
     margin: auto;
     padding: 80px;
-    color: #ffffff;
+    color: #FFFFFF;
     position: relative;
-    opacity: 0.9;
+    opacity: 0.8;
 }
 
 .content .par{
@@ -975,8 +978,7 @@ color: #ffffff;
 font-size: 65px
 }
 .index {
-  background-color: black;
-  opacity: 0.8;
+  background-color: #000000;
     border-radius: 5px;
     padding: 20px;
 }
